@@ -21,9 +21,9 @@ jobs:
             -o /tmp/gitleaks.tgz
           sudo tar -xzf /tmp/gitleaks.tgz -C /usr/local/bin gitleaks
           python3 -m pip install --quiet semgrep
-      - name: 시크릿 스캔 (경고)
-        run: gitleaks git . -v --exit-code 0
-      - name: SAST (경고)
-        run: semgrep --config p/ci --config p/python demo-app/
-      - name: SCA · IaC (경고)
-        run: trivy fs --scanners vuln,misconfig . --exit-code 0 --severity HIGH,CRITICAL
+      - name: 시크릿 스캔 (차단)
+        run: gitleaks git . -v --exit-code 1
+      - name: SAST (차단)
+        run: semgrep --config p/ci --config p/python --error demo-app/
+      - name: SCA · IaC (차단 — CRITICAL만)
+        run: trivy fs --scanners vuln,misconfig . --exit-code 1 --severity CRITICAL
